@@ -1,0 +1,31 @@
+version: '2'
+services:
+
+    dbserver:
+        container_name: mysql
+        image: mysql:8.0
+        volumes:
+            - ./sql:/docker-entrypoint-initdb.d
+            - mysql-db:/var/lib/mysql
+        environment:
+            MYSQL_DATABASE: api_sample
+            MYSQL_ROOT_PASSWORD: 10113-Xavi
+
+    app:
+        container_name: jpa-server
+        build:
+            context: .
+            dockerfile: DockerFile
+        image: watari/boot:0.1.0                            
+        depends_on:
+            - dbserver
+        ports:
+            - "8080:8080"
+        volumes:
+            - .:/app
+        environment:
+            JAR_TARGET: jpa-training-0.0.1-SNAPSHOT.jar
+
+volumes:
+    mysql-db:
+        driver: local
