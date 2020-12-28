@@ -56,20 +56,6 @@ public class ClassroomsServiceImpl implements ClassroomsService {
 
   @Override
   public void init() {
-
-    // ReservationMembers reservationMembers1 =
-    // ReservationMembers.builder()
-    // .nickname("nick01")
-    // .memberId(1L)
-    // .build();
-    // reservationMembersRepository.save(reservationMembers1);
-    // ReservationMembers reservationMembers2 =
-    // ReservationMembers.builder()
-    // .nickname("nick02")
-    // .memberId(2L)
-    // .build();
-    // reservationMembersRepository.save(reservationMembers2);
-    //
     List<Brands> brands = List.of(
         Brands.builder()
             .code("100")
