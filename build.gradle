@@ -20,12 +20,30 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	// implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.18'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// testImplementation 'org.springframework.security:spring-security-test'
+	compile group: 'org.glassfish', name: 'javax.el', version: '3.0.1-b11'
+	compile group: 'org.hibernate', name: 'hibernate-validator', version: '6.1.6.Final'
+	compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5'
+	compile group: 'org.modelmapper.extensions', name: 'modelmapper-spring', version: '2.3.9'
 }
 
 test {
 	useJUnitPlatform()
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+jar {
+    archiveBaseName = 'gs-gradle'
+    archiveVersion =  '0.1.0'
 }
