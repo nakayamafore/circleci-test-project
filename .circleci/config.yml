@@ -29,7 +29,7 @@ jobs:
     steps: 
         - checkout 
         - add_ssh_keys # 秘密鍵を読み込む
-        - run: ssh ${USER_NAME}@${HOST_NAME} 'cd /home/ec2-user/src && git pull' 
+        - run: ssh ${USER_NAME}@${HOST_NAME} 'cd /home/ec2-user/src/circleci-test-project/ && git pull' 
 
 workflows:
   version: 2.1
