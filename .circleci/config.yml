@@ -4,24 +4,39 @@ orbs:
 jobs:
   build-and-test:
     docker:
-      - image: ouinaka/amazonlinux:custom
+      - image: cimg/base:edge
         auth:
           username: $DOCKERHUB_USER
           password: $DOCKERHUB_PASSWORD
     working_directory: ~/repo
     environment:
-      JAVA_HOME: /usr/lib/jvm/java-11-amazon-corretto.x86_64
       JAVA_OPTS: -Xmx3200m
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1
     steps: 
       - checkout 
-      - run: 
-          name: テストの実施
-          command: ./gradlew test
-      - run: 
-          name: ビルドの実施
-          command: ./gradlew build
+      - setup_remote_docker:
+          version: 19.03.8
+          docker_layer_caching: true
+      - run:
+          name: Install Docker Compose
+          command: |
+            curl -L https://github.com/docker/compose/releases/download/1.27.3/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+      - run:
+          name: docker-compose pull
+          command: sudo docker-compose pull
+      - run:
+          name: docker-compose build
+          command: |
+            sudo docker-compose build
+      - run:
+          name: Docker Login
+          command: sudo docker login -u ouinaka -p docker.matrix0814
+      - run:
+          name: Push image to registory
+          command: sudo docker push ouinaka/amazonlinux:custom
 
   deploy:
     machine:
@@ -29,7 +44,7 @@ jobs:
     steps: 
         - checkout 
         - add_ssh_keys # 秘密鍵を読み込む
-        - run: ssh ${USER_NAME}@${HOST_NAME} 'cd /home/ec2-user/src/circleci-test-project/ && git pull && ./gradlew build' 
+        - run: ssh ${USER_NAME}@${HOST_NAME} 'cd /home/ec2-user/src/circleci-test-project/ && git pull && ./gradlew build && java -jar ./build/libs/circleci-test-project-local-0.0.1-SNAPSHOT.jar' 
 
 workflows:
   version: 2.1
