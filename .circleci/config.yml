@@ -16,13 +16,13 @@ workflows:
   test-build-and-deploy:
     jobs:
       - aws-ecr/build-and-push-image:
-          account-url: ECR_ACCOUNT_URL
+          account-url: AWS_ECR_ACCOUNT_URL
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           create-repo: true
           dockerfile: Dockerfile
           path: .
-          region: ECR_REGION
+          region: AWS_REGION
           repo: circleci-test-project
           tag: "$CIRCLE_SHA1"
       - deploy:
