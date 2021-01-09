@@ -28,10 +28,10 @@ workflows:
       - aws-ecs/deploy-service-update:
           requires:
             - aws-ecr/build-and-push-image
-          family: 'circleci-ecr-image'
+          family: 'circleci-custom'
           cluster-name: 'circleci-ecs'
           service-name: 'circleci-ecs-service'
-          container-image-name-updates: "container=circleci-custom,tag=${CIRCLE_SHA1}"
+          container-image-name-updates: "container=circleci-ecr-image,tag=${CIRCLE_SHA1}"
       - deploy:
           requires:
             - aws-ecr/build-and-push-image
