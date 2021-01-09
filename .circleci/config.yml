@@ -24,6 +24,13 @@ workflows:
           region: AWS_REGION
           repo: circleci-test-project
           tag: "$CIRCLE_SHA1"
+      - aws-ecs/deploy-service-update:
+          requires:
+            - aws-ecr/build_and_push_image
+          aws-region: ${AWS_REGION}
+          family: "circleci-ecs-service"
+          cluster-name: "circleci-ecs"
+          container-image-name-updates: "container=circleci-ecs-service,tag=${CIRCLE_SHA1}"
       - deploy:
           requires:
             - aws-ecr/build-and-push-image
