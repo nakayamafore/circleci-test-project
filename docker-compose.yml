@@ -10,13 +10,12 @@ services:
         environment:
             MYSQL_DATABASE: api_sample
             MYSQL_ROOT_PASSWORD: 10113-Xavi
-
     app:
         container_name: jpa-server
         build:
             context: .
             dockerfile: DockerFile
-        image: watari/boot:0.1.0                            
+        image: ouinaka/amazonlinux:custom                           
         depends_on:
             - dbserver
         ports:
@@ -24,7 +23,7 @@ services:
         volumes:
             - .:/app
         environment:
-            JAR_TARGET: jpa-training-0.0.1-SNAPSHOT.jar
+            JAR_TARGET: circleci-test-project-local-0.0.1-SNAPSHOT.jar
 
 volumes:
     mysql-db:
