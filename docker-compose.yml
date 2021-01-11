@@ -10,7 +10,6 @@ services:
         environment:
             MYSQL_DATABASE: api_sample
             MYSQL_ROOT_PASSWORD: 10113-Xavi
-
     app:
         container_name: jpa-server
         build:
