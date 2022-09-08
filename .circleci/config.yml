@@ -1,44 +1,40 @@
 version: 2.1
 orbs:
-  aws-cli: circleci/aws-cli@1.3.1
+  aws-ecr: circleci/aws-ecr@6.15.2
+  aws-ecs: circleci/aws-ecs@1.4.0
 jobs:
-  build-and-test:
-    docker:
-      - image: ouinaka/amazonlinux:custom
-        auth:
-          username: $DOCKERHUB_USER
-          password: $DOCKERHUB_PASSWORD
-    working_directory: ~/repo
-    environment:
-      JAVA_HOME: /usr/lib/jvm/java-11-amazon-corretto.x86_64
-      JAVA_OPTS: -Xmx3200m
-      DOCKER_BUILDKIT: 1
-      COMPOSE_DOCKER_CLI_BUILD: 1
-    steps: 
-      - checkout 
-      - run: 
-          name: テストの実施
-          command: ./gradlew test
-      - run: 
-          name: ビルドの実施
-          command: ./gradlew build
-
   deploy:
     machine:
       image: circleci/classic:edge
     steps: 
         - checkout 
         - add_ssh_keys # 秘密鍵を読み込む
-        - run: ssh ${USER_NAME}@${HOST_NAME} 'cd /home/ec2-user/src/circleci-test-project/ && git pull && ./gradlew build' 
+        - run: ssh ${USER_NAME}@${HOST_NAME} 'cd /home/ec2-user/src/circleci-test-project/ && git pull && ./gradlew build && java -jar ./build/libs/circleci-test-project-local-0.0.1-SNAPSHOT.jar' 
 
 workflows:
   version: 2.1
   test-build-and-deploy:
     jobs:
-      - build-and-test
+      - aws-ecr/build-and-push-image:
+          account-url: AWS_ECR_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          create-repo: true
+          dockerfile: DockerFile
+          path: .
+          region: AWS_REGION
+          repo: circleci-test-project
+          tag: "$CIRCLE_SHA1"
+      - aws-ecs/deploy-service-update:
+          requires:
+            - aws-ecr/build-and-push-image
+          family: 'circleci-custom'
+          cluster-name: 'circleci-ecs'
+          service-name: 'circleci-ecs-service'
+          container-image-name-updates: "container=circleci-ecr-image,tag=${CIRCLE_SHA1}"
       - deploy:
           requires:
-            - build-and-test
+            - aws-ecr/build-and-push-image
           filters:
             branches:
               only: main

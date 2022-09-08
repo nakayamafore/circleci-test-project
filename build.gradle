@@ -22,6 +22,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	// implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.2'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.18'
@@ -33,6 +34,7 @@ dependencies {
 	compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5'
 	compile group: 'org.modelmapper.extensions', name: 'modelmapper-spring', version: '2.3.9'
+	
 }
 
 test {
